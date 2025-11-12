@@ -3,14 +3,13 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 5000;
+require('dotenv').config();
 
 //middleware
 app.use(cors());
 app.use(express.json());
 
-// BookHeavendb
-// jP0GY8kAvkwbmVpL
-const uri = "mongodb+srv://BookHeavendb:jP0GY8kAvkwbmVpL@cluster0.vleqg85.mongodb.net/?appName=Cluster0";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.vleqg85.mongodb.net/?appName=Cluster0`;
 
 const client = new MongoClient(uri, {
   serverApi: {
