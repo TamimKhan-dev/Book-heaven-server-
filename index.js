@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -56,6 +56,25 @@ async function run() {
       const query = { userEmail: email};
       const userBooks = await booksCollection.find(query).toArray();
       res.send(userBooks);
+    })
+
+    app.put('/update-book/:id', async (req, res) => {
+      const id = req.params.id;
+      const updatedBook = req.body;
+      const filter = { _id: new ObjectId(id)}
+      const newBook = {
+        $set: {
+          title: updatedBook.title,
+          author: updatedBook.author,
+          price: updatedBook.price,
+          coverImage: updatedBook.coverImage,
+          genre: updatedBook.genre,
+          rating: updatedBook.rating,
+        }
+      }
+
+      const result = await booksCollection.updateOne(filter, newBook);
+      res.send(result);
     })
 
     await client.db("admin").command({ ping: 1 });
