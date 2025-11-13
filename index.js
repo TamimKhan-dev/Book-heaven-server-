@@ -30,6 +30,22 @@ app.listen(port, () => {
 async function run() {
   try {
     await client.connect();
+
+    const bookdb = client.db('bookdb');
+    const booksCollection = bookdb.collection('books');
+    const usersCollection = bookdb.collection('users');
+
+    app.post('/add-book', async (req, res) => {
+        const newBook = req.body;
+        const result = await booksCollection.insertOne(newBook);
+        res.send(result);
+    })
+
+    app.get('/all-books',  async (req, res) => {
+      const books = await booksCollection.find().toArray();
+      res.send(books);
+    })
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } 
