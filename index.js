@@ -74,6 +74,7 @@ async function run() {
           coverImage: updatedBook.coverImage,
           genre: updatedBook.genre,
           rating: updatedBook.rating,
+          summary: updatedBook.summary
         },
       };
 
