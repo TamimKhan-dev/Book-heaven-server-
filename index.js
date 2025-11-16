@@ -33,7 +33,6 @@ async function run() {
 
     const bookdb = client.db("bookdb");
     const booksCollection = bookdb.collection("books");
-    const usersCollection = bookdb.collection("users");
 
     app.post("/add-book", async (req, res) => {
       const newBook = req.body;
@@ -89,7 +88,24 @@ async function run() {
       res.send(result);
     });
 
-    await client.db("admin").command({ ping: 1 });
+    app.get('/all-books-sorted', async (req, res) => {
+      const books = await booksCollection.find().sort({ rating: -1}).toArray();
+      res.send(books);
+    })
+
+    app.post('/add-comment/:id', async (req, res) => {
+      const bookId = req.params.id;
+      const newComment = req.body;
+
+      const result = await booksCollection.updateOne(
+        { _id: new ObjectId(bookId) },
+        { $push: { comments: newComment }}
+      )
+
+      res.send(result);
+    })
+
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
